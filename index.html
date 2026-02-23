@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Double Grace Mobile</title>
+    <style>
+        :root { --gold: #d4af37; --dark: #111; --card: #1a1a1a; --text: #eee; }
+        
+        body { 
+            background: var(--dark); 
+            color: var(--text); 
+            font-family: sans-serif; 
+            margin: 0; 
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* --- Splash Screen --- */
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.8s;
+        }
+
+        .welcome-text {
+            color: var(--gold);
+            font-size: 22px;
+            font-weight: bold;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1.2s forwards;
+        }
+
+        .shop-name {
+            font-size: 28px;
+            margin-top: 10px;
+            color: #fff;
+            opacity: 0;
+            animation: fadeInUp 1.2s 0.5s forwards;
+        }
+
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .loader {
+            margin-top: 30px;
+            width: 30px; height: 30px;
+            border: 3px solid #333;
+            border-top: 3px solid var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* --- Main UI --- */
+        .header { 
+            background: var(--card); 
+            padding: 20px; 
+            text-align: center; 
+            border-bottom: 2px solid var(--gold);
+        }
+
+        .container { padding: 15px; display: none; } /* စစချင်း ဖျောက်ထားမယ် */
+
+        .tabs { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 5px; 
+            margin-bottom: 20px; 
+        }
+
+        .tab { 
+            background: #222; 
+            padding: 12px 5px; 
+            text-align: center; 
+            font-size: 11px; 
+            cursor: pointer; 
+            border-radius: 5px; 
+            border: 1px solid #333; 
+            color: #888; 
+        }
+
+        .tab.active { background: var(--gold); color: #000; font-weight: bold; border: none; }
+
+        .item-card { 
+            background: var(--card); 
+            border-radius: 12px; 
+            padding: 15px; 
+            margin-bottom: 12px; 
+            border: 1px solid #222; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+
+        .item-info b { display: block; font-size: 16px; margin-bottom: 5px; }
+        .item-info span { color: var(--gold); font-size: 14px; font-weight: bold; }
+
+        #admin-panel { 
+            display: none; 
+            background: #222; 
+            padding: 20px; 
+            border-radius: 15px; 
+            border: 1px solid var(--gold); 
+            margin-top: 20px; 
+        }
+
+        input, select { 
+            width: 100%; 
+            padding: 12px; 
+            margin: 10px 0; 
+            background: #000; 
+            border: 1px solid #444; 
+            color: white; 
+            border-radius: 8px; 
+            box-sizing: border-box; 
+        }
+
+        .btn { 
+            width: 100%; 
+            padding: 12px; 
+            border: none; 
+            border-radius: 8px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            margin-top: 10px; 
+        }
+
+        .btn-gold { background: var(--gold); color: #000; }
+        .btn-outline { background: transparent; border: 1px solid var(--gold); color: var(--gold); margin-top: 30px; }
+        .btn-del { background: #ff4444; color: white; width: auto; padding: 5px 12px; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+    <div id="splash-screen">
+        <div class="welcome-text">မင်္ဂလာပါ</div>
+        <div class="shop-name">Double Grace Mobile</div>
+        <div style="color: #666; margin-top: 10px; font-size: 12px;">မှ ကြိုဆိုပါတယ်</div>
+        <div class="loader"></div>
+    </div>
+
+    <div id="app-header" class="header" style="display: none;">
+        <h2 style="margin:0;">Double Grace Mobile</h2>
+        <div style="font-size: 11px; margin-top: 5px;">📱 ဖုန်းပြင် နှင့် ဝန်ဆောင်မှုပေါင်းစုံ</div>
+    </div>
+
+    <div class="container" id="main-content">
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('ဖုန်းပြင်', this)">🔧 ဖုန်းပြင်</div>
+            <div class="tab" onclick="switchTab('တပတ်ရစ်', this)">📱 တပတ်ရစ်</div>
+            <div class="tab" onclick="switchTab('အပိုပစ္စည်း', this)">🎧 အပိုပစ္စည်း</div>
+            <div class="tab" onclick="switchTab('Social', this)">🌐 Social</div>
+        </div>
+
+        <h3 id="current-category" style="color: var(--gold);">ဖုန်းပြင်စာရင်း</h3>
+        <div id="display-list"></div>
+
+        <button class="btn btn-outline" id="login-btn" onclick="adminLogin()">ဆိုင်ရှင် Login (Admin)</button>
+
+        <div id="admin-panel">
+            <h3 style="margin-top:0; color:var(--gold);">အချက်အလက်တင်ရန်</h3>
+            <input type="text" id="pName" placeholder="အမည် (ဥပမာ- iPhone 11)">
+            <input type="text" id="pPrice" placeholder="စျေးနှုန်း (ဥပမာ- ၁ သောင်း)">
+            <select id="pType">
+                <option value="ဖုန်းပြင်">ဖုန်းပြင်</option>
+                <option value="တပတ်ရစ်">တပတ်ရစ်</option>
+                <option value="အပိုပစ္စည်း">အပိုပစ္စည်း</option>
+                <option value="Social">Social အကောင့်</option>
+            </select>
+            <button class="btn btn-gold" onclick="uploadData()">Update လုပ်မည်</button>
+            <button class="btn" style="background:#555; color:white;" onclick="changePassword()">Password ပြောင်းမည်</button>
+            <button class="btn" style="background:#444; color:#fff;" onclick="location.reload()">ထွက်မည်</button>
+        </div>
+    </div>
+
+<script>
+    // Password စစ်ဆေးခြင်း
+    if (!localStorage.getItem('admin_pass')) {
+        localStorage.setItem('admin_pass', '1234');
+    }
+
+    // Splash Screen Logic
+    window.onload = () => {
+        setTimeout(() => {
+            const splash = document.getElementById('splash-screen');
+            splash.style.opacity = '0';
+            setTimeout(() => {
+                splash.style.display = 'none';
+                document.getElementById('app-header').style.display = 'block';
+                document.getElementById('main-content').style.display = 'block';
+                loadData();
+            }, 800); 
+        }, 2500);
+    };
+
+    let currentTab = "ဖုန်းပြင်";
+    let isAdminMode = false;
+
+    function switchTab(category, el) {
+        currentTab = category;
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('current-category').innerText = category + " စာရင်း";
+        loadData();
+    }
+
+    function adminLogin() {
+        let savedPass = localStorage.getItem('admin_pass');
+        let userEntry = prompt("ဆိုင်ရှင် Password ရိုက်ထည့်ပါ:");
+        if(userEntry === savedPass) {
+            isAdminMode = true;
+            document.getElementById('admin-panel').style.display = 'block';
+            document.getElementById('login-btn').style.display = 'none';
+            loadData();
+        } else if(userEntry !== null) {
+            alert("Password မှားယွင်းနေပါသည်။");
+        }
+    }
+
+    function changePassword() {
+        let currentPass = localStorage.getItem('admin_pass');
+        let oldPass = prompt("လက်ရှိ Password ကို ရိုက်ပါ:");
+        if(oldPass === currentPass) {
+            let newPass = prompt("Password အသစ် ရိုက်ထည့်ပါ:");
+            if(newPass) {
+                localStorage.setItem('admin_pass', newPass);
+                alert("Password ပြောင်းလဲပြီးပါပြီ။");
+            }
+        } else {
+            alert("လက်ရှိ Password မှားနေပါသည်။");
+        }
+    }
+
+    function uploadData() {
+        const name = document.getElementById('pName').value;
+        const price = document.getElementById('pPrice').value;
+        const type = document.getElementById('pType').value;
+        if(!name || !price) return alert("အကုန်ဖြည့်ပါ");
+
+        let data = JSON.parse(localStorage.getItem('dg_store')) || [];
+        data.push({ name, price, type, id: Date.now() });
+        localStorage.setItem('dg_store', JSON.stringify(data));
+        
+        document.getElementById('pName').value = "";
+        document.getElementById('pPrice').value = "";
+        loadData();
+        alert("တင်ပြီးပါပြီ!");
+    }
+
+    function loadData() {
+        const list = document.getElementById('display-list');
+        let data = JSON.parse(localStorage.getItem('dg_store')) || [];
+        let filtered = data.filter(item => item.type === currentTab);
+        
+        list.innerHTML = "";
+        if(filtered.length === 0) {
+            list.innerHTML = `<p style="text-align:center; color:#555; margin-top:30px;">စာရင်း မရှိသေးပါ။</p>`;
+            return;
+        }
+
+        filtered.forEach(item => {
+            list.innerHTML += `
+                <div class="item-card">
+                    <div class="item-info">
+                        <b>${item.name}</b>
+                        <span>${item.price}</span>
+                    </div>
+                    ${isAdminMode ? `<button class="btn btn-del" onclick="deleteData(${item.id})">ဖျက်</button>` : ''}
+                </div>`;
+        });
+    }
+
+    function deleteData(id) {
+        if(confirm("ဖျက်မှာ သေချာလား?")) {
+            let data = JSON.parse(localStorage.getItem('dg_store')) || [];
+            data = data.filter(item => item.id !== id);
+            localStorage.setItem('dg_store', JSON.stringify(data));
+            loadData();
+        }
+    }
+</script>
+
+</body>
+</html>
