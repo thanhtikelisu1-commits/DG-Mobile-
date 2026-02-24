@@ -30,6 +30,7 @@
         .btn { width: 100%; padding: 15px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 18px; }
         .btn-gold { background: var(--gold); color: #000; }
         #preview { width: 100%; height: 200px; object-fit: contain; margin-top: 15px; display: none; background: #000; border-radius: 10px; }
+        .pass-btn { background: #333; color: #aaa; font-size: 14px; margin-top: 15px; }
     </style>
 </head>
 <body>
@@ -53,8 +54,11 @@
         <div id="display-list"></div>
 
         <div id="admin-panel">
-            <h3 style="color:var(--gold);">ပစ္စည်းအသစ်တင်ရန်</h3>
-            <input type="text" id="pName" placeholder="အမည် (ဥပမာ- iPhone 11)">
+            <h3 style="color:var(--gold); margin-bottom:5px;">ဆိုင်ရှင်နေရာ</h3>
+            <button class="btn pass-btn" onclick="changePassword()">🔑 Password ပြောင်းမည်</button>
+            <hr style="border:0; border-top:1px solid #333; margin:20px 0;">
+            
+            <input type="text" id="pName" placeholder="ပစ္စည်းအမည်">
             <input type="text" id="pPrice" placeholder="စျေးနှုန်း">
             <select id="pType">
                 <option value="ဖုန်းပြင်">ဖုန်းပြင်</option>
@@ -74,16 +78,40 @@
     let currentTab = "ဖုန်းပြင်";
     let isAdminMode = false;
 
+    // Password ပြောင်းသည့်စနစ်
+    function changePassword() {
+        let currentPass = localStorage.getItem('admin_pass') || '1234';
+        let old = prompt("လက်ရှိ Password ကို ရိုက်ပါ:");
+        if (old === currentPass) {
+            let newPass = prompt("Password အသစ် ပေးပါ:");
+            if (newPass && newPass.length >= 4) {
+                localStorage.setItem('admin_pass', newPass);
+                alert("Password ပြောင်းလဲမှု အောင်မြင်ပါသည်!");
+            } else {
+                alert("Password က အနည်းဆုံး ၄ လုံး ရှိရပါမည်။");
+            }
+        } else {
+            alert("Password အဟောင်း မှားနေပါသည်။");
+        }
+    }
+
     function chatWithAdmin() {
         alert("ဆိုင်ရှင် - မင်္ဂလာပါဗျ။ ဘယ်ဖုန်းလဲခင်ဗျာ? ဘောင်ချာပြပေးပါ သို့မဟုတ် ပုံပို့ပေးပါခင်ဗျာ။");
     }
 
     function adminLogin() {
+        let savedPass = localStorage.getItem('admin_pass') || '1234';
         let pass = prompt("Admin Password ရိုက်ပါ:");
-        if(pass === "1234") {
+        if(pass === savedPass) {
             isAdminMode = true;
             document.getElementById('admin-panel').style.display = 'block';
             loadData();
+        } else if (pass === "recovery99") { // Password မေ့သွားရင် သုံးဖို့ Master Key
+            alert("Master Key ဖြင့် ဝင်ရောက်ထားသည်။ Password ကို ချက်ချင်း ပြန်ပြင်ပါ။");
+            isAdminMode = true;
+            document.getElementById('admin-panel').style.display = 'block';
+        } else {
+            alert("Password မှားနေပါသည်။");
         }
     }
 
