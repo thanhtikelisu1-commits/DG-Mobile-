@@ -5,87 +5,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Double Grace Mobile</title>
     <style>
-        :root { --gold: #d4af37; --dark: #000; --card: #111; --text: #eee; }
-        body { background: var(--dark); color: var(--text); font-family: sans-serif; margin: 0; padding-bottom: 50px; }
+        :root { --gold: #d4af37; --dark: #000; --card: #1a1a1a; --text: #fff; }
+        body { background: var(--dark); color: var(--text); font-family: sans-serif; margin: 0; padding-bottom: 80px; font-size: 18px; }
         
-        /* Header - Admin ဖွက်ထားရန် နေရာ */
-        .header { background: var(--card); padding: 20px; text-align: center; border-bottom: 2px solid var(--gold); user-select: none; }
-        .header h2 { margin: 0; color: var(--gold); cursor: pointer; }
+        .header { background: var(--card); padding: 30px 20px; text-align: center; border-bottom: 3px solid var(--gold); }
+        .header h1 { margin: 0; color: var(--gold); font-size: 32px; cursor: pointer; }
+        .address-bar { font-size: 14px; color: #aaa; margin-top: 10px; line-height: 1.5; }
 
-        .container { padding: 15px; }
-        .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 20px; }
-        .tab { background: #222; padding: 10px 2px; text-align: center; font-size: 11px; cursor: pointer; border-radius: 5px; color: #888; border: 1px solid #333; }
+        .container { padding: 20px; }
+        .tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 25px; }
+        .tab { background: #222; padding: 15px 5px; text-align: center; font-size: 14px; cursor: pointer; border-radius: 10px; color: #fff; border: 1px solid #444; }
         .tab.active { background: var(--gold); color: #000; font-weight: bold; border: none; }
 
-        /* Item Display */
-        .item-card { background: var(--card); border-radius: 15px; overflow: hidden; margin-bottom: 20px; border: 1px solid #222; position: relative; }
-        .item-img { width: 100%; height: 200px; object-fit: cover; background: #222; }
-        .item-detail { padding: 15px; }
-        .item-detail b { font-size: 18px; display: block; margin-bottom: 5px; }
-        .item-detail span { color: var(--gold); font-weight: bold; }
+        .item-card { background: var(--card); border-radius: 20px; overflow: hidden; margin-bottom: 25px; border: 1px solid #333; position: relative; }
+        .item-img { width: 100%; height: 250px; object-fit: cover; background: #222; }
+        .item-detail { padding: 20px; }
+        .item-detail b { font-size: 24px; display: block; margin-bottom: 10px; }
+        .item-detail span { color: var(--gold); font-size: 22px; font-weight: bold; }
 
-        /* Admin Panel */
-        #admin-panel { display: none; background: #1a1a1a; padding: 20px; border-radius: 15px; border: 1px solid var(--gold); margin-top: 10px; }
-        input, select { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #444; color: white; border-radius: 8px; box-sizing: border-box; }
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 5px; }
-        .btn-gold { background: var(--gold); color: #000; }
-        .btn-del { position: absolute; top: 10px; right: 10px; background: rgba(255,0,0,0.8); color: white; border-radius: 5px; padding: 5px 10px; font-size: 12px; }
+        /* Chat System */
+        .chat-btn { position: fixed; bottom: 20px; right: 20px; background: #25d366; color: white; padding: 15px 25px; border-radius: 50px; font-weight: bold; text-decoration: none; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 100; font-size: 16px; }
         
-        #preview { width: 100%; height: 150px; object-fit: contain; margin-top: 10px; display: none; background: #000; border-radius: 10px; }
+        /* Admin Panel */
+        #admin-panel { display: none; background: #111; padding: 25px; border-radius: 20px; border: 2px solid var(--gold); margin-top: 20px; }
+        input, select { width: 100%; padding: 15px; margin: 15px 0; background: #000; border: 1px solid #555; color: white; border-radius: 10px; font-size: 18px; box-sizing: border-box; }
+        .btn { width: 100%; padding: 15px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 18px; }
+        .btn-gold { background: var(--gold); color: #000; }
+        #preview { width: 100%; height: 200px; object-fit: contain; margin-top: 15px; display: none; background: #000; border-radius: 10px; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h2 onmousedown="startTimer()" onmouseup="clearTimer()" ontouchstart="startTimer()" ontouchend="clearTimer()">Double Grace Mobile</h2>
-        <div style="font-size: 10px; color: #666; margin-top: 5px;">📱 ဖုန်းပြင် နှင့် ဝန်ဆောင်မှုပေါင်းစုံ</div>
+        <h1 onclick="adminLogin()">Double Grace Mobile</h1>
+        <div class="address-bar">
+            📍 မြစ်ကြီးနားမြို့၊ တပ်ကုန်းရပ်ကွက်၊ အင်ဂျန်ဒုံမနက်ဈေးထိပ်<br>
+            📱 ဖုန်းမှန် နှင့် အပိုပစ္စည်းရောင်းဝယ်ရေး
+        </div>
     </div>
 
     <div class="container">
         <div class="tabs">
             <div class="tab active" onclick="switchTab('ဖုန်းပြင်', this)">🔧 ဖုန်းပြင်</div>
-            <div class="tab" onclick="switchTab('တပတ်ရစ်', this)">📱 တပတ်ရစ်</div>
-            <div class="tab" onclick="switchTab('အပိုပစ္စည်း', this)">🎧 အပိုပစ္စည်း</div>
-            <div class="tab" onclick="switchTab('Social', this)">🌐 Social</div>
+            <div class="tab" onclick="switchTab('တပတ်ရစ်', this)">📱 Second Phone များကြည့်ရန်</div>
+            <div class="tab" onclick="switchTab('ဖုန်းမှန်', this)">💎 ဖုန်းမှန်/အပိုပစ္စည်း</div>
         </div>
 
-        <h3 id="current-category" style="color: var(--gold);">ဖုန်းပြင်စာရင်း</h3>
+        <h2 id="current-category" style="color: var(--gold); border-left: 5px solid var(--gold); padding-left: 10px;">ဖုန်းပြင်စာရင်း</h2>
         <div id="display-list"></div>
 
         <div id="admin-panel">
-            <h3 style="margin-top:0; color:var(--gold);">Admin Panel</h3>
-            <input type="text" id="pName" placeholder="ပစ္စည်းအမည်">
+            <h3 style="color:var(--gold);">ပစ္စည်းအသစ်တင်ရန်</h3>
+            <input type="text" id="pName" placeholder="အမည် (ဥပမာ- iPhone 11)">
             <input type="text" id="pPrice" placeholder="စျေးနှုန်း">
             <select id="pType">
                 <option value="ဖုန်းပြင်">ဖုန်းပြင်</option>
-                <option value="တပတ်ရစ်">တပတ်ရစ်</option>
-                <option value="အပိုပစ္စည်း">အပိုပစ္စည်း</option>
-                <option value="Social">Social</option>
+                <option value="တပတ်ရစ်">Second Phone များကြည့်ရန်</option>
+                <option value="ဖုန်းမှန်">ဖုန်းမှန်/အပိုပစ္စည်း</option>
             </select>
-            <p style="font-size: 12px; color: #888; margin-bottom: 5px;">ပုံရွေးရန် -</p>
             <input type="file" id="pImg" accept="image/*" onchange="previewImage(event)">
             <img id="preview">
-            <button class="btn btn-gold" onclick="uploadData()">ပစ္စည်းတင်မည်</button>
-            <button class="btn" style="background:#444; color:#fff;" onclick="location.reload()">Admin ထွက်မည်</button>
+            <button class="btn btn-gold" onclick="uploadData()">တင်မည်</button>
+            <button class="btn" style="background:#444; color:#fff; margin-top:10px;" onclick="location.reload()">ပိတ်မည်</button>
         </div>
     </div>
+
+    <a href="https://m.me/YOUR_FACEBOOK_PAGE" class="chat-btn" id="messenger-link">💬 ဆိုင်ရှင်နှင့် တိုက်ရိုက်ပြောရန်</a>
 
 <script>
     let currentTab = "ဖုန်းပြင်";
     let isAdminMode = false;
-    let pressTimer;
 
-    // Admin ဖွက်ထားတဲ့စနစ်
-    function startTimer() { pressTimer = window.setTimeout(adminLogin, 3000); }
-    function clearTimer() { clearTimeout(pressTimer); }
+    // ဆိုင်ရှင်အတွက် Facebook Messenger link ပြင်ရန် (ဒီနေရာမှာ ဆိုင်ရဲ့ Page နာမည်ထည့်ပါ)
+    // အကယ်၍ Messenger မသုံးချင်ရင် WhatsApp link ပြောင်းလို့ရပါတယ်
+    document.getElementById('messenger-link').onclick = function() {
+        alert("ဆိုင်ရှင် - ဘယ်ဖုန်းလဲဗျ? ဘောင်ချာပြပေးပါ သို့မဟုတ် ပုံပို့ပေးပါခင်ဗျာ။");
+    };
 
     function adminLogin() {
-        let pass = prompt("ဆိုင်ရှင် Password ရိုက်ထည့်ပါ:");
-        if(pass === (localStorage.getItem('admin_pass') || '1234')) {
+        let pass = prompt("Admin Password ရိုက်ပါ:");
+        if(pass === "1234") {
             isAdminMode = true;
             document.getElementById('admin-panel').style.display = 'block';
             loadData();
-            alert("Admin Mode ဖွင့်လိုက်ပါပြီ");
         }
     }
 
@@ -104,10 +106,62 @@
         const price = document.getElementById('pPrice').value;
         const type = document.getElementById('pType').value;
         const imgInput = document.getElementById('pImg');
-
-        if(!name || !price) return alert("အချက်အလက်ပြည့်စုံစွာဖြည့်ပါ");
+        if(!name || !price) return alert("အချက်အလက်ဖြည့်ပါ");
 
         const reader = new FileReader();
+        if(imgInput.files[0]) {
+            reader.onload = function() { saveToLocal(name, price, type, reader.result); };
+            reader.readAsDataURL(imgInput.files[0]);
+        } else { saveToLocal(name, price, type, ""); }
+    }
+
+    function saveToLocal(name, price, type, imgData) {
+        let data = JSON.parse(localStorage.getItem('dg_store')) || [];
+        data.push({ name, price, type, img: imgData, id: Date.now() });
+        localStorage.setItem('dg_store', JSON.stringify(data));
+        alert("တင်ပြီးပါပြီ!");
+        location.reload();
+    }
+
+    function loadData() {
+        const list = document.getElementById('display-list');
+        let data = JSON.parse(localStorage.getItem('dg_store')) || [];
+        let filtered = data.filter(item => item.type === currentTab);
+        list.innerHTML = "";
+        filtered.forEach(item => {
+            list.innerHTML += `
+                <div class="item-card">
+                    ${item.img ? `<img src="${item.img}" class="item-img">` : `<div class="item-img" style="display:flex; align-items:center; justify-content:center; color:#444;">No Image</div>`}
+                    <div class="item-detail">
+                        <b>${item.name}</b>
+                        <span>${item.price} MMK</span>
+                    </div>
+                    ${isAdminMode ? `<button style="background:red; color:white; border:none; padding:10px; width:100%;" onclick="deleteData(${item.id})">ဖျက်မည်</button>` : ''}
+                </div>`;
+        });
+    }
+
+    function switchTab(cat, el) {
+        currentTab = cat;
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('current-category').innerText = (cat === 'တပတ်ရစ်' ? "Second Phone များ" : cat) + " စာရင်း";
+        loadData();
+    }
+
+    function deleteData(id) {
+        if(confirm("ဖျက်မှာလား?")) {
+            let data = JSON.parse(localStorage.getItem('dg_store')) || [];
+            data = data.filter(i => i.id !== id);
+            localStorage.setItem('dg_store', JSON.stringify(data));
+            loadData();
+        }
+    }
+
+    window.onload = loadData;
+</script>
+</body>
+</html>
         if(imgInput.files[0]) {
             reader.onload = function() {
                 saveToLocal(name, price, type, reader.result);
