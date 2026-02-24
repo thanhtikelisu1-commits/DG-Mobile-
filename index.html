@@ -23,10 +23,8 @@
         .item-detail b { font-size: 24px; display: block; margin-bottom: 10px; }
         .item-detail span { color: var(--gold); font-size: 22px; font-weight: bold; }
 
-        /* Chat System */
-        .chat-btn { position: fixed; bottom: 20px; right: 20px; background: #25d366; color: white; padding: 15px 25px; border-radius: 50px; font-weight: bold; text-decoration: none; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 100; font-size: 16px; }
+        .chat-btn { position: fixed; bottom: 20px; right: 20px; background: #25d366; color: white; padding: 15px 25px; border-radius: 50px; font-weight: bold; text-decoration: none; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 100; font-size: 16px; border: none; cursor: pointer; }
         
-        /* Admin Panel */
         #admin-panel { display: none; background: #111; padding: 25px; border-radius: 20px; border: 2px solid var(--gold); margin-top: 20px; }
         input, select { width: 100%; padding: 15px; margin: 15px 0; background: #000; border: 1px solid #555; color: white; border-radius: 10px; font-size: 18px; box-sizing: border-box; }
         .btn { width: 100%; padding: 15px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 18px; }
@@ -70,17 +68,15 @@
         </div>
     </div>
 
-    <a href="https://m.me/YOUR_FACEBOOK_PAGE" class="chat-btn" id="messenger-link">💬 ဆိုင်ရှင်နှင့် တိုက်ရိုက်ပြောရန်</a>
+    <button class="chat-btn" onclick="chatWithAdmin()">💬 ဆိုင်ရှင်နှင့် တိုက်ရိုက်ပြောရန်</button>
 
 <script>
     let currentTab = "ဖုန်းပြင်";
     let isAdminMode = false;
 
-    // ဆိုင်ရှင်အတွက် Facebook Messenger link ပြင်ရန် (ဒီနေရာမှာ ဆိုင်ရဲ့ Page နာမည်ထည့်ပါ)
-    // အကယ်၍ Messenger မသုံးချင်ရင် WhatsApp link ပြောင်းလို့ရပါတယ်
-    document.getElementById('messenger-link').onclick = function() {
-        alert("ဆိုင်ရှင် - ဘယ်ဖုန်းလဲဗျ? ဘောင်ချာပြပေးပါ သို့မဟုတ် ပုံပို့ပေးပါခင်ဗျာ။");
-    };
+    function chatWithAdmin() {
+        alert("ဆိုင်ရှင် - မင်္ဂလာပါဗျ။ ဘယ်ဖုန်းလဲခင်ဗျာ? ဘောင်ချာပြပေးပါ သို့မဟုတ် ပုံပို့ပေးပါခင်ဗျာ။");
+    }
 
     function adminLogin() {
         let pass = prompt("Admin Password ရိုက်ပါ:");
@@ -108,8 +104,8 @@
         const imgInput = document.getElementById('pImg');
         if(!name || !price) return alert("အချက်အလက်ဖြည့်ပါ");
 
-        const reader = new FileReader();
         if(imgInput.files[0]) {
+            const reader = new FileReader();
             reader.onload = function() { saveToLocal(name, price, type, reader.result); };
             reader.readAsDataURL(imgInput.files[0]);
         } else { saveToLocal(name, price, type, ""); }
@@ -157,64 +153,6 @@
             loadData();
         }
     }
-
-    window.onload = loadData;
-</script>
-</body>
-</html>
-        if(imgInput.files[0]) {
-            reader.onload = function() {
-                saveToLocal(name, price, type, reader.result);
-            };
-            reader.readAsDataURL(imgInput.files[0]);
-        } else {
-            saveToLocal(name, price, type, "");
-        }
-    }
-
-    function saveToLocal(name, price, type, imgData) {
-        let data = JSON.parse(localStorage.getItem('dg_store')) || [];
-        data.push({ name, price, type, img: imgData, id: Date.now() });
-        localStorage.setItem('dg_store', JSON.stringify(data));
-        alert("တင်ပြီးပါပြီ!");
-        location.reload();
-    }
-
-    function loadData() {
-        const list = document.getElementById('display-list');
-        let data = JSON.parse(localStorage.getItem('dg_store')) || [];
-        let filtered = data.filter(item => item.type === currentTab);
-        list.innerHTML = "";
-        filtered.forEach(item => {
-            list.innerHTML += `
-                <div class="item-card">
-                    ${item.img ? `<img src="${item.img}" class="item-img">` : `<div class="item-img" style="display:flex; align-items:center; justify-content:center; color:#444;">No Image</div>`}
-                    <div class="item-detail">
-                        <b>${item.name}</b>
-                        <span>${item.price} MMK</span>
-                    </div>
-                    ${isAdminMode ? `<button class="btn-del" onclick="deleteData(${item.id})">ဖျက်မည်</button>` : ''}
-                </div>`;
-        });
-    }
-
-    function switchTab(cat, el) {
-        currentTab = cat;
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        el.classList.add('active');
-        document.getElementById('current-category').innerText = cat + " စာရင်း";
-        loadData();
-    }
-
-    function deleteData(id) {
-        if(confirm("ဖျက်မှာ သေချာပါသလား?")) {
-            let data = JSON.parse(localStorage.getItem('dg_store')) || [];
-            data = data.filter(i => i.id !== id);
-            localStorage.setItem('dg_store', JSON.stringify(data));
-            loadData();
-        }
-    }
-
     window.onload = loadData;
 </script>
 </body>
